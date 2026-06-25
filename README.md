@@ -4,14 +4,14 @@ EduSync is a premium, high-fidelity bidirectional rich-text editor synchronizer 
 
 ---
 
-## 🚀 Quick Start (How to Run)
+## Quick Start (How to Run)
 1. Clone or download this project folder on your local machine.
 2. Double-click **`index.html`** to open it directly in any modern web browser (no installation or bundlers required).
 3. Type in either editor, highlight text to apply formatting, or trigger undo operations. Telemetry events will stream live into the bottom console.
 
 ---
 
-## ✨ Features Implemented
+## Features Implemented
 
 ### 1. Core Requirements
 *   **Dual Editor Canvas:** Two separate iframes, each running isolated browser document sessions, displaying distinct primary/replica labels.
@@ -30,7 +30,7 @@ EduSync is a premium, high-fidelity bidirectional rich-text editor synchronizer 
 *   **Undo/Redo History Sync:** Custom debounced history manager caches states inside each editor. Pressing `Ctrl+Z` / `Ctrl+Y` or clicking toolbar arrows synchronization moves both frames in lockstep.
 *   **Live Event Log Console:** Renders macOS-style event logs detailing the source, destination, timestamp, and collapsible raw HTML payload.
 
-### 4. Creative Product Enhancement (EduChunks Special) 🔊
+### 4. Creative Product Enhancement (EduChunks Special) 
 *   **Text-to-Speech (TTS) Reader:** Implements the Web Speech Synthesis API inside each editor toolbar pill. Highlight any sentence (or leave empty) and click `🔊 Speak` to hear it read out in narration mode, aligning with EduChunks' document-to-playlist core product.
 *   **Dynamic Font Family Selector:** Features a drop-down menu containing 5 distinct premium typography styles (*Outfit*, *Fira Code*, *Georgia*, *Playfair Display*, *Merriweather*). Font selections update the other iframe workspace in real-time, matching standard styling sync.
 
@@ -54,27 +54,9 @@ The cursor mapping algorithm in `editor.js` handles text formatting boundary int
     ```
 2.  **DOM Node Traversal:** Upon drawing the new HTML markup, a recursive DOM Tree Walker traverses the new text nodes to aggregate characters. When the character tally matches the cached offset, it injects the caret selection range back into that text node container.
 
----
 
-## 📍 Candidate Interview Q&A
 
-*(Answers to questions sent by Vinaya Babu)*
-
-### 🏢 Bangalore In-person Availability
-*   **Are you available to work from our Bangalore office (in-person / offline)?**
-    > **Yes**, I am fully available to work in-person from the Bangalore office.
-*   **Which days or schedule works best for you?**
-    > **Monday to Friday** works best, matching standard business hours.
-
-### 🎓 College Commitment
-*   **Are you currently enrolled in a degree program?**
-    > **Yes**, I am currently enrolled in a degree program.
-*   **How many months can you commit to working with us without college commitments?**
-    > I can commit to a full-time in-person internship for **6 months** (or insert your own duration) starting immediately.
-
----
-
-## 📁 Project File Map
+## Project File Map
 *   `index.html` - Dashboard host console, frame broker, and Mac log terminal.
 *   `host.css` - Custom styling for space canvas grids, status panels, and drawer consoles.
 *   `editor.html` - Reusable editor iframe template featuring floating toolbar docks.
