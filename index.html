@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>EduSync Platform - Real-time Iframe Sync Broker</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&family=Fira+Code:wght@400;500&family=Playfair+Display:ital,wght@0,400..900;1,400..900&family=Merriweather:ital,wght@0,300;0,400;0,700;1,300;1,400&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="host.css">
+</head>
+<body>
+  <div class="grid-overlay"></div>
+  <div class="radial-glow glow-1"></div>
+  <div class="radial-glow glow-2"></div>
+
+  <div class="app-container">
+    <header class="app-header">
+      <div class="brand">
+        <span class="brand-badge">SYNC BRIDGE</span>
+        <h1>EduSync <span class="brand-ver">v1.1.0</span></h1>
+      </div>
+      
+      <div class="header-metrics">
+        <div class="metric-card">
+          <span class="metric-title">TRANSACTIONS:</span>
+          <span class="metric-num text-cyan" id="sync-counter">0</span>
+        </div>
+        <div class="metric-sep"></div>
+        <div class="metric-card">
+          <span class="metric-title">LAST_OP:</span>
+          <span class="metric-num text-purple" id="last-action">READY</span>
+        </div>
+      </div>
+    </header>
+
+    <main class="editors-canvas">
+      <section class="workspace-panel panel-cyan" id="panel-alpha">
+        <div class="panel-header">
+          <div class="panel-title-group">
+            <span class="panel-status-dot pulse-cyan"></span>
+            <h2>Workspace Alpha</h2>
+          </div>
+          <span class="panel-badge badge-cyan">CHANNEL_01</span>
+        </div>
+        <div class="panel-view">
+          <iframe id="iframe-a" src="editor.html?id=FrameA" title="Workspace Alpha"></iframe>
+        </div>
+      </section>
+
+      <section class="workspace-panel panel-amber" id="panel-beta">
+        <div class="panel-header">
+          <div class="panel-title-group">
+            <span class="panel-status-dot pulse-amber"></span>
+            <h2>Workspace Beta</h2>
+          </div>
+          <span class="panel-badge badge-amber">CHANNEL_02</span>
+        </div>
+        <div class="panel-view">
+          <iframe id="iframe-b" src="editor.html?id=FrameB" title="Workspace Beta"></iframe>
+        </div>
+      </section>
+    </main>
+
+    <footer class="telemetry-console">
+      <div class="console-title-bar">
+        <div class="window-controls">
+          <span class="win-dot dot-close"></span>
+          <span class="win-dot dot-minimize"></span>
+          <span class="win-dot dot-expand"></span>
+        </div>
+        <span class="console-title-text">Broker Event Stream Logs</span>
+        
+        <div class="console-actions">
+          <label class="toggle-control" title="Enforces same-origin policy check">
+            <input type="checkbox" id="origin-toggle" checked>
+            <span class="toggle-slider"></span>
+            <span class="toggle-label">Secure Lock</span>
+          </label>
+          <div class="action-divider"></div>
+          <button id="clear-log-btn" class="console-btn-clear">Clear logs</button>
+        </div>
+      </div>
+      
+      <div class="console-body" id="terminal-body">
+        <div class="console-row system-row">
+          <span class="console-time">[00:00:00]</span>
+          <span class="console-text">Real-time sync broker online. Origin validation enabled. Listening...</span>
+        </div>
+      </div>
+    </footer>
+  </div>
+
+  <script>
+    const iframeA = document.getElementById('iframe-a');
+    const iframeB = document.getElementById('iframe-b');
+    const syncCounterEl = document.getElementById('sync-counter');
+    const lastActionEl = document.getElementById('last-action');
+    const terminalBody = document.getElementById('terminal-body');
+    const clearLogBtn = document.getElementById('clear-log-btn');
+    const originToggle = document.getElementById('origin-toggle');
+
+    let syncCount = 0;
+
+    function getTimestamp() {
+      const now = new Date();
+      return now.toTimeString().split(' ')[0] + '.' + String(now.getMilliseconds()).padStart(3, '0');
+    }
+
+    function logEvent(source, target, action, type, payload) {
+      const row = document.createElement('div');
+      row.className = `console-row ${source.replace(' ', '').toLowerCase()}-row`;
+      
+      const timeSpan = document.createElement('span');
+      timeSpan.className = 'console-time';
+      timeSpan.textContent = `[${getTimestamp()}]`;
+      
+      const content = document.createElement('div');
+      content.className = 'console-text-wrapper';
+      
+      const headerText = document.createElement('span');
+      headerText.className = 'console-header-txt';
+      headerText.innerHTML = `<strong>${source}</strong> &rarr; <strong>${target}</strong> <span class="evt-tag">[${type}]</span>`;
+      
+      const bodyText = document.createElement('span');
+      bodyText.className = 'console-body-txt';
+      bodyText.textContent = `operation: ${action}`;
+
+      const details = document.createElement('details');
+      details.className = 'console-payload-details';
+      const summary = document.createElement('summary');
+      summary.textContent = 'View State HTML';
+      const pre = document.createElement('pre');
+      pre.textContent = payload.html || JSON.stringify(payload, null, 2);
+      
+      details.appendChild(summary);
+      details.appendChild(pre);
+
+      content.appendChild(headerText);
+      content.appendChild(bodyText);
+      content.appendChild(details);
+
+      row.appendChild(timeSpan);
+      row.appendChild(content);
+
+      terminalBody.appendChild(row);
+      terminalBody.scrollTop = terminalBody.scrollHeight;
+    }
+
+    window.addEventListener('message', (event) => {
+      if (originToggle.checked) {
+        const allowedOrigins = [window.location.origin, 'null', ''];
+        if (!allowedOrigins.includes(event.origin) && !event.origin.startsWith('file://')) {
+          console.warn('Rejected message from unauthorized origin:', event.origin);
+          return;
+        }
+      }
+
+      const message = event.data;
+      if (!message || typeof message !== 'object') return;
+
+      let sourceName = '';
+      let targetFrame = null;
+      let targetName = '';
+
+      if (event.source === iframeA.contentWindow) {
+        sourceName = 'Frame A';
+        targetFrame = iframeB.contentWindow;
+        targetName = 'Frame B';
+      } else if (event.source === iframeB.contentWindow) {
+        sourceName = 'Frame B';
+        targetFrame = iframeA.contentWindow;
+        targetName = 'Frame A';
+      }
+
+      if (message.type === 'READY') {
+        const row = document.createElement('div');
+        row.className = 'console-row system-row';
+        row.innerHTML = `<span class="console-time">[${getTimestamp()}]</span> <span class="console-text">Connection verified with <strong>${sourceName}</strong> (Channel Active)</span>`;
+        terminalBody.appendChild(row);
+        terminalBody.scrollTop = terminalBody.scrollHeight;
+        return;
+      }
+
+      if (message.type === 'FORMAT_SYNC' || message.type === 'INPUT_SYNC' || message.type === 'UNDO_REDO_SYNC') {
+        syncCount++;
+        syncCounterEl.textContent = syncCount;
+        lastActionEl.textContent = message.action.toUpperCase();
+
+        logEvent(sourceName, targetName, message.action, message.type, message);
+
+        if (targetFrame) {
+          targetFrame.postMessage(message, '*');
+        }
+      }
+    });
+
+    clearLogBtn.addEventListener('click', () => {
+      terminalBody.innerHTML = `
+        <div class="console-row system-row">
+          <span class="console-time">[${getTimestamp()}]</span>
+          <span class="console-text">Event database flushed.</span>
+        </div>
+      `;
+    });
+  </script>
+</body>
+</html>

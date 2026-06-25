@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>EduSync Editor Workspace</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&family=Fira+Code:wght@400;500&family=Playfair+Display:ital,wght@0,400..900;1,400..900&family=Merriweather:ital,wght@0,300;0,400;0,700;1,300;1,400&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="editor.css">
+</head>
+<body>
+  <div class="editor-workspace-wrapper">
+    <div class="floating-toolbar-pill" id="editor-toolbar">
+      <div class="pill-group">
+        <button class="capsule-btn" data-command="bold" title="Bold (Ctrl+B)"><strong>B</strong></button>
+        <button class="capsule-btn" data-command="italic" title="Italic (Ctrl+I)"><em>I</em></button>
+        <button class="capsule-btn" data-command="strikeThrough" title="Strikethrough"><s>S</s></button>
+        <button class="capsule-btn" data-command="underline" title="Underline (Ctrl+U)"><u>U</u></button>
+      </div>
+      
+      <div class="pill-divider"></div>
+
+      <div class="pill-group">
+        <select class="capsule-select" id="font-select" title="Change Font Family">
+          <option value="Outfit">Outfit</option>
+          <option value="Fira Code">Fira Code</option>
+          <option value="Georgia">Georgia</option>
+          <option value="Playfair Display">Playfair</option>
+          <option value="Merriweather">Merriweather</option>
+        </select>
+      </div>
+
+      <div class="pill-divider"></div>
+      
+      <div class="pill-group">
+        <button class="capsule-btn text-btn" data-command="insertUnorderedList" title="Bullet List">List</button>
+        <button class="capsule-btn text-btn" data-command="insertOrderedList" title="Numbered List">1.</button>
+      </div>
+      
+      <div class="pill-divider"></div>
+      
+      <div class="pill-group">
+        <button class="capsule-btn icon-btn" id="undo-btn" title="Undo (Ctrl+Z)">&lsaquo;</button>
+        <button class="capsule-btn icon-btn" id="redo-btn" title="Redo (Ctrl+Y)">&rsaquo;</button>
+        <button class="capsule-btn text-btn" data-command="removeFormat" title="Clear Formatting">&times; Clear</button>
+      </div>
+
+      <div class="pill-divider"></div>
+
+      <div class="pill-group">
+        <button class="capsule-btn text-btn" id="tts-btn" title="Listen to selection (Speech Synthesis)">🔊 Speak</button>
+      </div>
+
+      <div class="pill-divider"></div>
+
+      <div class="pill-status" id="sync-flash-dot" title="Real-time Link Secure">
+        <span class="status-dot"></span>
+      </div>
+    </div>
+
+    <div class="editor-workspace-canvas" id="editor-container">
+      <div class="editable-content" contenteditable="true" id="editor" placeholder="Type here to test bidirectional sync..."></div>
+    </div>
+  </div>
+
+  <script src="editor.js"></script>
+</body>
+</html>
